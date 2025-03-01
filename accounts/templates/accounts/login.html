@@ -1,73 +1,145 @@
-<!-- Файл: templates/accounts/login.html -->
-{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-{% block title %}Вход в систему{% endblock %}
+</head>
+<body>
 
-{% block content %}
-<h2>Вход в систему</h2>
-
-<!-- Отображение ошибок, если они есть -->
-{% if error %}
-  <div class="alert alert-danger">{{ error }}</div>
-{% endif %}
-
-<!-- Форма для входа -->
-<form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="username">Имя пользователя:</label>
-        <input type="text" name="username" id="username" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label for="password">Пароль:</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Войти</button>
-</form>
-
-<!-- Кнопка для вызова модального окна регистрации -->
-<button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#registerModal">
-    Зарегистрироваться
-</button>
-
-<!-- Модальное окно для регистрации -->
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form method="post" action="{% url 'register' %}">
-        {% csrf_token %}
-        <div class="modal-header">
-          <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <!-- Заголовок страницы -->
+    <header class="bg-blue text-white py-4 position-relative" id="header">
+        <div class="container header-container">
+            <div class="header-left">
+                <img src="{% static 'images/logo_mono.png' %}" alt="Logo" class="header-logo">
+            </div>
+            <div class="header-title-container">
+                <h1 class="header-title">Geo Map</h1>
+                <div class="header-subtitle">Геоинформационная система для контроля за этапами строительства</div>
+            </div>
         </div>
-        <div class="modal-body">
-          <!-- Поля формы регистрации -->
-          <div class="form-group">
-              <label for="reg_username">Имя пользователя:</label>
-              <input type="text" name="username" id="reg_username" class="form-control" required>
-          </div>
-          <div class="form-group">
-              <label for="reg_email">Электронная почта:</label>
-              <input type="email" name="email" id="reg_email" class="form-control" required>
-          </div>
-          <div class="form-group">
-              <label for="reg_password1">Пароль:</label>
-              <input type="password" name="password1" id="reg_password1" class="form-control" required>
-          </div>
-          <div class="form-group">
-              <label for="reg_password2">Подтверждение пароля:</label>
-              <input type="password" name="password2" id="reg_password2" class="form-control" required>
-          </div>
-          <!-- Если требуется, можно добавить здесь поле капчи -->
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container mt-4 centered-content">
+        <div class="background-container">
+            <div class="background background1"></div>
+            <div class="background background2"></div>
+            <div class="background background3"></div>
+            <div class="background background4"></div>
+            <div class="background background5"></div>
+            <div class="background background6"></div>
+            <div class="background background7"></div>
+            <div class="background background8"></div>
+            <div class="background background9"></div>
+            <div class="background background10"></div>
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Зарегистрироваться</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+
+        <div class="login-container">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="login-logo">
+            <div id="loginMessage" style="display:none; color: red; text-align: center; margin-bottom: 10px;"></div>
+            
+            <div id="spinner" class="text-center" style="display: none; margin-bottom: 10px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Форма входа с указанием action и CSRF-токеном -->
+            <form id="loginForm" method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="login_username">Имя пользователя:</label>
+                    <input type="text" name="username" id="login_username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login_password">Пароль:</label>
+                    <input type="password" name="password" id="login_password" class="form-control" required>
+                </div>
+                
+                <!-- Блок для капчи (будет показан, если необходимо) -->
+                <div id="captcha-container" class="form-group" style="display:none;">
+                    <div id="captcha" class="g-recaptcha" data-sitekey="your-site-key" data-callback="onCaptchaSuccess"></div>
+                </div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" name="remember_me" id="remember_me" class="form-check-input">
+                    <label for="remember_me" class="form-check-label">Запомнить имя пользователя</label>
+                </div>
+                <button type="submit" id="login-button" class="btn btn-primary btn-block">Войти в систему</button>
+            </form>
+            
+            <!-- Ссылка для открытия модального окна регистрации -->
+            <p class="text-center mt-3">У вас нет аккаунта? 
+                <a href="#" data-toggle="modal" data-target="#registerModal">Зарегистрироваться</a>
+            </p>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
-{% endblock %}
+
+        <!-- Модальное окно для регистрации -->
+        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Форма регистрации с указанием action и CSRF-токеном -->
+                        <form id="registrationForm" method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="register_fio">ФИО:</label>
+                                <input type="text" name="full_name" id="register_fio" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register_username">Логин:</label>
+                                <input type="text" name="username" id="register_username" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register_password1">Пароль:</label>
+                                <input type="password" name="password1" id="register_password1" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register_password2">Подтверждение пароля:</label>
+                                <input type="password" name="password2" id="register_password2" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <div id="register-captcha-container" class="g-recaptcha" data-sitekey="your-site-key"></div>
+                            </div>
+                            
+                            <button type="submit" id="register-button" class="btn btn-primary btn-block" disabled>Создать</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок сообщения об успешном создании аккаунта -->
+        <div id="successMessage" style="display:none; background-color: green; color: white; padding: 10px; margin-top: 20px;">
+            Ваш аккаунт успешно создан. Ожидайте активации.
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="text-center py-4">
+        <p>&copy; 2024 Intics</p>
+    </footer>
+
+    <!-- Подключение jQuery, Popper.js и Bootstrap JS для работы модальных окон -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/login.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+/* === 1. ПОДКЛЮЧЕНИЕ ШРИФТОВ === */
+@font-face {
+    font-family: 'Golos Text';
+    src: url('../fonts/GolosText-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Golos Text';
+    src: url('../fonts/GolosText-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* === 2. ГЛОБАЛЬНЫЕ СТИЛИ === */
+body {
+    font-family: 'Golos Text', Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+}
+
+/* === 3. ХЕДЕР === */
+header {
+    background-color: #1F2122;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.header-title-container {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.header-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.header-subtitle {
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 5px;
+}
+
+.header-logo {
+    width: 180px;
+    transition: width 0.3s ease, transform 0.3s ease;
+}
+
+/* === 4. ФОН === */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 3s ease-in-out;
+}
+
+.background1 { background-image: url("../images/background1.webp"); opacity: 1; }
+.background2 { background-image: url("../images/background2.webp"); }
+.background3 { background-image: url("../images/background3.webp"); }
+.background4 { background-image: url("../images/background4.webp"); }
+.background5 { background-image: url("../images/background5.webp"); }
+.background6 { background-image: url("../images/background6.webp"); }
+.background7 { background-image: url("../images/background7.webp"); }
+.background8 { background-image: url("../images/background8.webp"); }
+.background9 { background-image: url("../images/background9.webp"); }
+.background10 { background-image: url("../images/background10.webp"); }
+
+/* === 5. ФОРМА ВХОДА === */
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-container {
+    max-width: 600px;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-logo {
+    width: 100px;
+    margin-bottom: 20px;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-container .form-group {
+    margin-bottom: 15px;
+}
+
+.login-container .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-container .btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #3953DB;
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover { background-color: #2e44b0; }
+.btn-primary:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+/* === 6. МОДАЛЬНОЕ ОКНО (ФОРМА РЕГИСТРАЦИИ) === */
+.modal .modal-dialog {
+    max-width: 600px;
+}
+
+.modal .modal-content {
+    padding: 20px;
+}
+
+.modal .modal-header,
+.modal .modal-footer {
+    border: none;
+}
+
+.modal .form-control {
+    margin-bottom: 10px;
+}
+
+/* === 7. КАПЧА === */
+#captcha-container {
+    display: none;
+    margin-top: 10px;
+}
+
+/* === 8. ФУТЕР === */
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+/* === 9. АДАПТИВНОСТЬ === */
+@media (max-width: 1200px) {
+    .header-logo { display: none; }
+    .header-title { font-size: 2em; }
+    .header-container { flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 980px) {
+    .login-container { transform: scale(1.2); }
+    .modal-content { transform: scale(1.1); }
+}

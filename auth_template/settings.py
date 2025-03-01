@@ -98,7 +98,7 @@ USE_TZ = True
 
 # Статические файлы
 STATIC_URL = '/static/'
-STATICFILES_DIRS = []
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = env('STATIC_ROOT')
 
 # URL для редиректа после входа и выхода
