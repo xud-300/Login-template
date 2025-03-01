@@ -1,0 +1,73 @@
+<!-- Файл: templates/accounts/login.html -->
+{% extends "base.html" %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+<h2>Вход в систему</h2>
+
+<!-- Отображение ошибок, если они есть -->
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<!-- Форма для входа -->
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" name="username" id="username" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Пароль:</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>
+
+<!-- Кнопка для вызова модального окна регистрации -->
+<button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#registerModal">
+    Зарегистрироваться
+</button>
+
+<!-- Модальное окно для регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Поля формы регистрации -->
+          <div class="form-group">
+              <label for="reg_username">Имя пользователя:</label>
+              <input type="text" name="username" id="reg_username" class="form-control" required>
+          </div>
+          <div class="form-group">
+              <label for="reg_email">Электронная почта:</label>
+              <input type="email" name="email" id="reg_email" class="form-control" required>
+          </div>
+          <div class="form-group">
+              <label for="reg_password1">Пароль:</label>
+              <input type="password" name="password1" id="reg_password1" class="form-control" required>
+          </div>
+          <div class="form-group">
+              <label for="reg_password2">Подтверждение пароля:</label>
+              <input type="password" name="password2" id="reg_password2" class="form-control" required>
+          </div>
+          <!-- Если требуется, можно добавить здесь поле капчи -->
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
