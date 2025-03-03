@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>{% block title %}Intix Map{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <!-- Подключаем стили Bootstrap для оформления -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Подключаем пользовательские стили из статического файла -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <!-- Подключаем jQuery для работы с JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Подключаем JavaScript Bootstrap для работы с компонентами Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Подключаем стили и скрипты SweetAlert для отображения всплывающих уведомлений -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <style>
+        .container {
+            max-width: 2000px; /* Устанавливаем максимальную ширину контейнера */
+        }
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Центрируем содержимое по вертикали и горизонтали */
+        }
+        .header-logo {
+            width: 180px; /* Задаем ширину логотипа */
+            height: auto;
+            transition: width 0.3s ease, transform 0.3s ease; /* Плавная анимация изменения размера логотипа */
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Распределяем элементы заголовка по краям */
+            width: 100%;
+            max-width: 100%; /* Устанавливаем максимальную ширину контейнера заголовка */
+        }
+        .header-title {
+            text-align: center;
+            margin: 0;
+            font-weight: bold; /* Делаем заголовок жирным */
+            flex-grow: 1;
+            white-space: nowrap; /* Запрещаем перенос текста на новую строку */
+            transition: font-size 0.3s ease; /* Плавная анимация изменения размера шрифта заголовка */
+        }
+        .bg-orange {
+            background-color: #F24F00; /* Устанавливаем оранжевый цвет фона */
+        }
+        .bg-blue {
+            background-color: #1F2122; /* Цвет фона для шапки страницы входа */
+        }
+        .header-right-container {
+            display: flex;
+            align-items: center; /* Выравниваем элементы по вертикали */
+        }
+        .logout-button {
+            background-color: #F24F00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Задаем расстояние между иконкой и текстом */
+            border-radius: 10px; /* Скругляем углы кнопки */
+            margin-top: 10px; /* Добавляем отступ сверху */
+        }
+        .logout-button i {
+            font-size: 1.2em; /* Устанавливаем размер иконки */
+        }
+        .logout-button:hover {
+            background-color: #e54300; /* Цвет кнопки при наведении */
+        }
+        .header-title-container {
+            flex-grow: 1;
+            text-align: center;
+            margin-left: -195px; /* Смещаем заголовок и подзаголовок влево */
+            transition: margin-left 0.3s ease; /* Плавная анимация изменения отступа */
+        }
+        .header-subtitle {
+            font-size: 16px; /* Задаем размер шрифта подзаголовка */
+            margin-top: 5px; /* Добавляем отступ сверху */
+            color: #ccc; /* Устанавливаем цвет текста подзаголовка */
+        }
+        @media (max-width: 1200px) { /* Правила для экранов шириной до 1200 пикселей */
+            .header-title {
+                font-size: 3.5em; /* Увеличиваем размер шрифта на мобильных устройствах */
+            }
+            .header-logo {
+		display: none;
+            }
+            .header-title-container {
+                margin-left: 0; /* Убираем отступ слева для заголовка на мобильных устройствах */
+                text-align: center; /* Центрируем заголовок */
+            }
+            .header-container {
+                flex-direction: column; /* Выстраиваем логотип и заголовок в колонку */
+                align-items: center; /* Центрируем содержимое по горизонтали */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок страницы -->
+    <header class="{% block header_class %}bg-orange{% endblock %} text-white py-4 position-relative" id="header"> <!-- Увеличиваем отступы сверху и снизу -->
+        <div class="container header-container">
+            <div class="header-left">
+                <!-- Логотип -->
+                <img src="{% static 'images/logo_mono.png' %}" alt="Logo" class="header-logo"> <!-- Устанавливаем логотип -->
+            </div>
+            <div class="header-title-container">
+                {% block header_title %}
+                <!-- Основной заголовок страницы -->
+                <h1 class="header-title">Geo Map</h1>
+                <!-- Подзаголовок -->
+                <div class="header-subtitle">Геоинформационная система для контроля за этапами строительства</div> <!-- Добавленный подзаголовок -->
+                {% endblock %}
+            </div>
+            <div class="header-right-container">
+                {% if user.is_authenticated %}
+                <!-- Панель навигации для авторизованных пользователей -->
+                <nav class="header-right">
+                    <!-- Форма для выхода из аккаунта -->
+                    <form id="logout-form" method="post" action="{% url 'logout' %}" class="form-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                    </form>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <!-- Основной контент страницы -->
+    <main class="container mt-4 {% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Футер -->
+    <footer class="text-center py-4">
+        <p>&copy; 2024 Intics</p>
+    </footer>
+</body>
+</html>

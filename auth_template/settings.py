@@ -102,7 +102,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = env('STATIC_ROOT')
 
 # URL для редиректа после входа и выхода
-LOGIN_REDIRECT_URL = '/main_app/'
+LOGIN_REDIRECT_URL = 'main_page'
 LOGOUT_REDIRECT_URL = '/'
 
 # Настройки по умолчанию для первичных ключей

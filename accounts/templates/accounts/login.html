@@ -1,3 +1,4 @@
+{% extends "base_login.html" %}
 {% load static %}
 
 {% block title %}Вход{% endblock %}
@@ -356,7 +357,7 @@
     $(document).ready(function() {
         // Проверка аутентификации: если пользователь уже залогинен, перенаправляем его на нужную страницу
         if ("{{ user.is_authenticated }}" === "True") {
-            window.location.href = "{% url 'main_app.urls' %}";
+            window.location.href = "{% url 'main_page' %}";
             return; // прерываем дальнейшее выполнение скрипта
         }
 

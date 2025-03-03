@@ -79,8 +79,8 @@ def user_login(request):
                 login(request, user)
                 cache.delete(failed_attempts_key)  # Сбрасываем счетчик после успешного входа
                 
-                # Изменяем редирект на страницу карты
-                return JsonResponse({'success': True, 'redirect_url': reverse('map_view')})
+                # Изменяем редирект на главную страницу
+                return JsonResponse({'success': True, 'redirect_url': reverse('main_page')})
             else:
                 cache.set(failed_attempts_key, (failed_attempts, first_attempt_time), timeout=120)
                 return JsonResponse({
@@ -111,9 +111,10 @@ def user_login(request):
         })
 
 # переброс на основую страницу приложения
-""" @login_required
-def map_view(request):
-    return render(request, 'index.html')  # Отображаем карту """
+@login_required
+def main_page(request):
+    return render(request, 'main_app/main.html')
+
 
 # Выход пользователя
 def user_logout(request):
