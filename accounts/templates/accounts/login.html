@@ -88,6 +88,7 @@
         font-size: 0.875em;
         margin-top: 0.25rem;
     }
+    
 
     /* Медиазапрос для экранов меньше 980px */
     @media (max-width: 980px) {
@@ -176,13 +177,19 @@
         </div>
         <div class="form-group">
             <label for="login_password">Пароль:</label>
-            <input type="password" name="password" id="login_password" class="form-control" required>
+            <div class="password-container" style="position: relative;">
+                <input type="password" name="password" id="login_password" class="form-control" required style="padding-right: 40px;">
+                <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
             {% if form.password.errors %}
                 <div class="invalid-feedback">
                     {{ form.password.errors }}
                 </div>
             {% endif %}
         </div>
+        
         
         <!-- Этот div покажет капчу, если reset_captcha равно True -->
         <div id="captcha-container" class="form-group" style="display:none;">
@@ -355,6 +362,17 @@
 
 
     $(document).ready(function() {
+        // Код для переключения видимости пароля
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordField = document.querySelector('#login_password');
+        if (togglePassword && passwordField) {
+            togglePassword.addEventListener('click', function () {
+                const currentType = passwordField.getAttribute('type');
+                const newType = currentType === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', newType);
+                this.firstElementChild.classList.toggle('fa-eye-slash');
+            });
+        }
         // Проверка аутентификации: если пользователь уже залогинен, перенаправляем его на нужную страницу
         if ("{{ user.is_authenticated }}" === "True") {
             window.location.href = "{% url 'main_page' %}";
@@ -393,7 +411,7 @@
             $(".form-control").removeClass("is-invalid");
 
             $.ajax({
-                url: "/register/",
+                url: "{% url 'register' %}",
                 type: "POST",
                 data: $(this).serialize(),
                 success: function(response) {

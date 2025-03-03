@@ -1,20 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Главная страница</title>
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Добро пожаловать в основное приложение</h1>
-    </header>
-    <main>
-        <p>Это главная страница, на которую попадает пользователь после авторизации.</p>
-    </main>
-    <footer>
-        <p>&copy; 2025 Мой проект</p>
-    </footer>
-    <script src="{% static 'js/main.js' %}"></script>
+    <!-- Здесь располагается основной контент главной страницы -->
+
+    <!-- Форма для выхода -->
+    <form method="post" action="{% url 'logout' %}" style="text-align: right;">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Выйти</button>
+    </form>
+
+    <!-- Остальной контент страницы -->
 </body>
 </html>

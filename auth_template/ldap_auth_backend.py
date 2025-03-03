@@ -1,41 +1,30 @@
-import logging
 from django.contrib.auth.backends import BaseBackend
 from ldap3 import Server, Connection, ALL, SUBTREE
 from django.conf import settings
 from django.contrib.auth.models import User
-from accounts.models import Profile  # Импорт модели Profile из приложения accounts
-
-# Настраиваем логирование
-logger = logging.getLogger(__name__)
+from accounts.models import Profile  # Импортируем модель Profile
 
 class LDAPBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None):
-        """
-        Аутентификация пользователя через LDAP-сервер.
-        
-        Пробует несколько вариантов DN (Distinguished Name) для заданного username.
-        Если аутентификация успешна, возвращает объект User (создавая его, если необходимо).
-        """
-        # Создаем объект Server для LDAP-сервера
+        # Создаем объект Server, представляющий LDAP-сервер
         server = Server(settings.LDAP_SERVER, get_info=ALL)
 
-        # Определяем варианты DN для пользователя
+        # Пробуем несколько вариантов Distinguished Name (DN) для пользователя
         dn_variants = [
-            f"{username}@norail.local",           # Формат userPrincipalName
-            f"norail.local\\{username}",           # Формат sAMAccountName
-            f"CN={username},OU=Users_norail,DC=norail,DC=local"  # Оригинальный формат
+            f"{username}@norail.local",  # формат userPrincipalName
+            f"norail.local\\{username}",  # формат sAMAccountName
+            f"CN={username},OU=Users_norail,DC=norail,DC=local"  # оригинальный формат
         ]
 
         for user_dn in dn_variants:
             try:
-                # Устанавливаем соединение с LDAP-сервером, используя данный вариант DN
+                # Пытаемся установить соединение с LDAP-сервером с использованием каждого варианта DN
                 conn = Connection(server, user=user_dn, password=password, auto_bind=True)
                 
-                # Если соединение успешно установлено
                 if conn.bind():
-                    logger.info(f"Успешная аутентификация {username} через LDAP с DN: {user_dn}")
+                    print(f"Успешная аутентификация {username} через LDAP с DN: {user_dn}")
 
-                    # Выполняем поиск пользователя в LDAP для получения полного имени (displayName)
+                    # Выполняем поиск пользователя в LDAP для получения полного имени (ФИО)
                     conn.search(
                         search_base=settings.LDAP_BASE_DN,
                         search_filter=f"(sAMAccountName={username})",
@@ -43,7 +32,7 @@ class LDAPBackend(BaseBackend):
                         attributes=['displayName']
                     )
 
-                    # Если найдены данные, извлекаем displayName, иначе используем username
+                    # Если найдены данные, извлекаем displayName, иначе используем логин как имя
                     if conn.entries:
                         display_name = conn.entries[0].displayName.value
                     else:
@@ -54,28 +43,25 @@ class LDAPBackend(BaseBackend):
                         user = User.objects.get(username=username)
                     except User.DoesNotExist:
                         user = User(username=username)
-                        user.set_unusable_password()  # Пароль не используется, так как аутентификация через LDAP
+                        user.set_unusable_password()  # Устанавливаем неиспользуемый пароль, т.к. мы не храним пароль в базе данных
                         user.save()
 
-                    # Получаем или создаем профиль пользователя и сохраняем displayName
+                    # Получаем или создаем профиль пользователя
                     profile, created = Profile.objects.get_or_create(user=user)
-                    profile.full_name = display_name
+                    profile.full_name = display_name  # Сохраняем ФИО в поле full_name профиля
                     profile.save()
 
                     # Разрываем соединение с LDAP-сервером
                     conn.unbind()
                     return user
             except Exception as e:
-                logger.error(f"Не удалось подключиться к LDAP-серверу с DN {user_dn}: {e}")
-                # Можно добавить продолжение цикла для следующих вариантов DN
+                print(f"Не удалось подключиться к LDAP-серверу как {user_dn}: {e}")
 
-        # Если ни один вариант DN не сработал, возвращаем None
+        # Если ни один из вариантов DN не сработал, возвращаем None
         return None
 
     def get_user(self, user_id):
-        """
-        Получает объект User по его ID.
-        """
+        # Получаем пользователя по его ID
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
