@@ -20,42 +20,92 @@ body {
     margin: 0;
 }
 
-/* === 3. ХЕДЕР === */
-header {
-    background-color: #1F2122;
+/* Хедер */
+#header {
+    background-color: #1F2122; /* Чёрно-серый фон */
     color: white;
-    padding: 1rem;
-    text-align: center;
+    padding: 20px 0;
+    position: relative;
 }
 
+/* Контейнер хедера */
 .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 10px 20px;
+    justify-content: center; /* Центрируем содержимое */
+    max-width: 1280px; /* Ограничиваем ширину */
+    margin: 0 auto;
+    position: relative;
 }
 
+/* Логотип слева */
+.header-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-left: 20px; /* Прижимает логотип к левому краю */
+}
+
+.header-logo {
+    width: 180px; /* Корректный размер логотипа */
+    height: auto;
+}
+
+/* Заголовок и подзаголовок по центру */
 .header-title-container {
     text-align: center;
     flex-grow: 1;
+    max-width: 600px; /* Ограничиваем ширину заголовка */
+    margin: 0 auto;
 }
 
 .header-title {
+    font-size: 2rem;
     font-weight: bold;
     margin: 0;
 }
 
 .header-subtitle {
-    font-size: 16px;
-    color: #ccc;
+    font-size: 1rem;
+    color: #cccccc;
     margin-top: 5px;
 }
 
-.header-logo {
-    width: 180px;
-    transition: width 0.3s ease, transform 0.3s ease;
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .header-title {
+        font-size: 1.8rem;
+    }
+    .header-subtitle {
+        font-size: 0.9rem;
+    }
+    .header-logo {
+        width: 150px;
+    }
 }
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .header-title {
+        font-size: 1.5rem;
+    }
+    .header-subtitle {
+        font-size: 0.875rem;
+    }
+    .header-logo {
+        width: 120px;
+        position: static;
+        transform: none;
+        padding-left: 0;
+        margin-bottom: 10px;
+    }
+}
+
+
 
 /* === 4. ФОН === */
 .background-container {
@@ -173,15 +223,8 @@ header {
     margin-top: 10px;
 }
 
-/* === 8. ФУТЕР === */
-footer {
-    background-color: #343a40;
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
-}
 
-/* === 9. АДАПТИВНОСТЬ === */
+/* === 8. АДАПТИВНОСТЬ === */
 @media (max-width: 1200px) {
     .header-logo { display: none; }
     .header-title { font-size: 2em; }

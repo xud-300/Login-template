@@ -1,145 +1,564 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход</title>
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-</head>
-<body>
+{% block title %}Вход{% endblock %}
 
-    <!-- Заголовок страницы -->
-    <header class="bg-blue text-white py-4 position-relative" id="header">
-        <div class="container header-container">
-            <div class="header-left">
-                <img src="{% static 'images/logo_mono.png' %}" alt="Logo" class="header-logo">
+{% block header_class %}bg-blue{% endblock %}
+
+{% block main_class %}centered-content{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        position: relative;
+    }
+
+    /* Контейнер для фонов */
+    .background-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1; /* Чтобы фон был позади всей остальной информации */
+    }
+
+    /* Общий стиль для фонов */
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        transition: opacity 3s ease-in-out; /* Плавный переход между фонами, время перехода 3 секунды */
+        opacity: 0; /* Фон невидим по умолчанию */
+    }
+
+    /* Добавляем 10 изображений */
+    .background1 { background-image: url("{% static 'images/background1.webp' %}"); }
+    .background2 { background-image: url("{% static 'images/background2.webp' %}"); }
+    .background3 { background-image: url("{% static 'images/background3.webp' %}"); }
+    .background4 { background-image: url("{% static 'images/background4.webp' %}"); }
+    .background5 { background-image: url("{% static 'images/background5.webp' %}"); }
+    .background6 { background-image: url("{% static 'images/background6.webp' %}"); }
+    .background7 { background-image: url("{% static 'images/background7.webp' %}"); }
+    .background8 { background-image: url("{% static 'images/background8.webp' %}"); }
+    .background9 { background-image: url("{% static 'images/background9.webp' %}"); }
+    .background10 { background-image: url("{% static 'images/background10.webp' %}"); }
+
+    .background1 { opacity: 1; } /* Первое изображение видно при загрузке */
+
+    .login-container {
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.73);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        transform: scale(1.1);
+        transform-origin: center;
+    }
+    .login-logo {
+        display: block;
+        margin: 0 auto 20px;
+        width: 150px;
+    }
+    .form-control {
+        margin-bottom: 10px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary {
+        background-color: #3953DB;
+        color: white;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #2e44b0;
+    }
+    .btn-primary:disabled {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+    .invalid-feedback {
+        color: red;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+
+    /* Медиазапрос для экранов меньше 980px */
+    @media (max-width: 980px) {
+        .login-container {
+            margin-top: -400px; /* Поднимаем форму ещё выше на мобильных устройствах */
+            transform: scale(2); /* Оставляем масштаб формы без изменений */
+        }
+
+        .login-logo {
+            width: 120px; /* Уменьшаем размер логотипа */
+        }
+
+        .form-control {
+            font-size: 1em; /* Уменьшаем размер текста в полях формы */
+        }
+
+        .btn-primary {
+            font-size: 1em; /* Уменьшаем кнопку для удобства на мобильных устройствах */
+            padding: 10px;
+        }
+
+        /* Адаптация формы регистрации */
+        .modal-content {
+            margin-top: 200px; /* Поднимаем форму регистрации выше на мобильных устройствах */
+            padding: 15px; /* Уменьшаем padding */
+            transform: scale(1.3); /* Убираем увеличение для мобильных */
+        }
+
+        .modal-header h5 {
+            font-size: 1.5em; /* Уменьшаем заголовок формы регистрации */
+        }
+
+        .modal .form-control {
+            font-size: 1em; /* Уменьшаем размер текста в полях формы */
+        }
+
+        .modal .btn-primary {
+            font-size: 1em; /* Уменьшаем кнопку в форме регистрации */
+            padding: 10px;
+        }
+
+        .modal-footer {
+            padding-top: 0; /* Убираем лишний отступ */
+        }
+
+        .modal .form-group {
+            margin-bottom: 10px; /* Уменьшаем отступы между полями формы */
+        }
+    }
+</style>
+
+<div class="background-container">
+    <div class="background background1"></div>
+    <div class="background background2"></div>
+    <div class="background background3"></div>
+    <div class="background background4"></div>
+    <div class="background background5"></div>
+    <div class="background background6"></div>
+    <div class="background background7"></div>
+    <div class="background background8"></div>
+    <div class="background background9"></div>
+    <div class="background background10"></div>
+</div>
+
+<div class="login-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="login-logo">
+    <div id="loginMessage" style="display:none; color: red; text-align: center; margin-bottom: 10px;"></div>
+    
+    <!-- Спиннер для отображения во время загрузки -->
+    <div id="spinner" class="text-center" style="display: none; margin-bottom: 10px;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <form id="loginForm" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="login_username">Имя пользователя:</label>
+            <input type="text" name="username" id="login_username" class="form-control" required>
+            {% if form.username.errors %}
+                <div class="invalid-feedback">
+                    {{ form.username.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="login_password">Пароль:</label>
+            <input type="password" name="password" id="login_password" class="form-control" required>
+            {% if form.password.errors %}
+                <div class="invalid-feedback">
+                    {{ form.password.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Этот div покажет капчу, если reset_captcha равно True -->
+        <div id="captcha-container" class="form-group" style="display:none;">
+            <div id="captcha" class="g-recaptcha" data-sitekey="6Le9rCQqAAAAALGIS2aWUBCVhlS8EojJ4_q0BeNS" data-callback="onCaptchaSuccess"></div>
+        </div>
+
+        <div class="form-group form-check">
+            <input type="checkbox" name="remember_me" id="remember_me" class="form-check-input">
+            <label for="remember_me" class="form-check-label">Запомнить имя пользователя</label>
+        </div>
+        <button type="submit" id="login-button" class="btn btn-primary btn-block">Войти в систему</button>
+    </form>
+    
+    <p class="text-center mt-3">У вас нет аккаунта? <a href="#" data-toggle="modal" data-target="#registerModal">Зарегистрироваться</a></p>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="header-title-container">
-                <h1 class="header-title">Geo Map</h1>
-                <div class="header-subtitle">Геоинформационная система для контроля за этапами строительства</div>
+            <div class="modal-body">
+                <form id="registrationForm" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="register_fio">ФИО:</label>
+                        <input type="text" name="full_name" id="register_fio" class="form-control" required>
+                        {% if form.full_name.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.full_name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="register_username">Логин:</label>
+                        <input type="text" name="username" id="register_username" class="form-control" required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="register_password1">Пароль:</label>
+                        <input type="password" name="password1" id="register_password1" class="form-control" required>
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password1.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="register_password2">Подтверждение пароля:</label>
+                        <input type="password" name="password2" id="register_password2" class="form-control" required>
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Добавляем поле капчи -->
+                    <div class="form-group">
+                        <div id="register-captcha-container" class="g-recaptcha"
+                             data-sitekey="6Le9rCQqAAAAALGIS2aWUBCVhlS8EojJ4_q0BeNS"
+                             data-callback="onCaptchaSuccess"
+                             data-expired-callback="onCaptchaExpired"></div>
+                        {% if form.captcha.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.captcha.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" id="register-button" class="btn btn-primary btn-block" disabled>Создать</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
             </div>
         </div>
-    </header>
+    </div>
+</div>
 
-    <!-- Основной контент -->
-    <main class="container mt-4 centered-content">
-        <div class="background-container">
-            <div class="background background1"></div>
-            <div class="background background2"></div>
-            <div class="background background3"></div>
-            <div class="background background4"></div>
-            <div class="background background5"></div>
-            <div class="background background6"></div>
-            <div class="background background7"></div>
-            <div class="background background8"></div>
-            <div class="background background9"></div>
-            <div class="background background10"></div>
-        </div>
+<div id="successMessage" style="display:none; background-color: green; color: white; padding: 10px; margin-top: 20px;">
+    Ваш аккаунт успешно создан. Ожидайте активации.
+</div>
 
-        <div class="login-container">
-            <img src="{% static 'images/logo.png' %}" alt="Logo" class="login-logo">
-            <div id="loginMessage" style="display:none; color: red; text-align: center; margin-bottom: 10px;"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function onCaptchaSuccess() {
+        console.log("Captcha passed successfully");
+
+        // Активируем кнопки после успешного прохождения капчи
+        document.getElementById('login-button').disabled = false;
+        document.getElementById('register-button').disabled = false;
+    }
+
+    function onCaptchaExpired() {
+        console.log("Captcha expired");
+
+        // Деактивируем кнопки, если срок действия капчи истек
+        document.getElementById('login-button').disabled = true;
+        document.getElementById('register-button').disabled = true;
+    }
+
+    function resetAndRenderCaptcha(captchaContainerId) {
+        const captchaContainer = document.getElementById(captchaContainerId);
+
+        if (captchaContainer) {
+            // Очищаем контейнер перед рендерингом новой капчи
+            captchaContainer.innerHTML = '';
+
+            // Получаем sitekey непосредственно из элемента или задаем его напрямую
+            const siteKey = captchaContainer.dataset.sitekey || '6Le9rCQqAAAAALGIS2aWUBCVhlS8EojJ4_q0BeNS';
+
+            // Создаем новый элемент div для капчи
+            const newCaptcha = document.createElement('div');
+            newCaptcha.className = 'g-recaptcha';
             
-            <div id="spinner" class="text-center" style="display: none; margin-bottom: 10px;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-
-            <!-- Форма входа с указанием action и CSRF-токеном -->
-            <form id="loginForm" method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="login_username">Имя пользователя:</label>
-                    <input type="text" name="username" id="login_username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="login_password">Пароль:</label>
-                    <input type="password" name="password" id="login_password" class="form-control" required>
-                </div>
-                
-                <!-- Блок для капчи (будет показан, если необходимо) -->
-                <div id="captcha-container" class="form-group" style="display:none;">
-                    <div id="captcha" class="g-recaptcha" data-sitekey="your-site-key" data-callback="onCaptchaSuccess"></div>
-                </div>
-
-                <div class="form-group form-check">
-                    <input type="checkbox" name="remember_me" id="remember_me" class="form-check-input">
-                    <label for="remember_me" class="form-check-label">Запомнить имя пользователя</label>
-                </div>
-                <button type="submit" id="login-button" class="btn btn-primary btn-block">Войти в систему</button>
-            </form>
+            // Устанавливаем sitekey и другие атрибуты
+            newCaptcha.setAttribute('data-sitekey', siteKey);
+            newCaptcha.setAttribute('data-callback', 'onCaptchaSuccess');
+            newCaptcha.setAttribute('data-expired-callback', 'onCaptchaExpired');
             
-            <!-- Ссылка для открытия модального окна регистрации -->
-            <p class="text-center mt-3">У вас нет аккаунта? 
-                <a href="#" data-toggle="modal" data-target="#registerModal">Зарегистрироваться</a>
-            </p>
-        </div>
+            captchaContainer.appendChild(newCaptcha);
 
-        <!-- Модальное окно для регистрации -->
-        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Форма регистрации с указанием action и CSRF-токеном -->
-                        <form id="registrationForm" method="post" action="{% url 'register' %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="register_fio">ФИО:</label>
-                                <input type="text" name="full_name" id="register_fio" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="register_username">Логин:</label>
-                                <input type="text" name="username" id="register_username" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="register_password1">Пароль:</label>
-                                <input type="password" name="password1" id="register_password1" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="register_password2">Подтверждение пароля:</label>
-                                <input type="password" name="password2" id="register_password2" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <div id="register-captcha-container" class="g-recaptcha" data-sitekey="your-site-key"></div>
-                            </div>
-                            
-                            <button type="submit" id="register-button" class="btn btn-primary btn-block" disabled>Создать</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            // Рендерим новую капчу
+            grecaptcha.render(newCaptcha, {
+                'sitekey': siteKey,
+                'callback': onCaptchaSuccess,
+                'expired-callback': onCaptchaExpired
+            });
 
-        <!-- Блок сообщения об успешном создании аккаунта -->
-        <div id="successMessage" style="display:none; background-color: green; color: white; padding: 10px; margin-top: 20px;">
-            Ваш аккаунт успешно создан. Ожидайте активации.
-        </div>
-    </main>
+            console.log("reCAPTCHA сброшена и отрендерена заново для формы " + captchaContainerId);
+        } else {
+            console.error("Не удалось сбросить и отрендерить reCAPTCHA. Элемент не найден или grecaptcha не загружена.");
+        }
+    }
 
-    <!-- Футер -->
-    <footer class="text-center py-4">
-        <p>&copy; 2024 Intics</p>
-    </footer>
 
-    <!-- Подключение jQuery, Popper.js и Bootstrap JS для работы модальных окон -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="{% static 'js/login.js' %}"></script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let backgrounds = document.querySelectorAll(".background");
+        let currentIndex = 0;
+        const transitionTime = 6000; 
+        const fadeTime = 3000; 
 
-</body>
-</html>
+        setInterval(() => {
+            let previousIndex = currentIndex;
+            currentIndex = (currentIndex + 1) % backgrounds.length;
+
+            
+            backgrounds[previousIndex].style.transition = `opacity ${fadeTime / 200}s ease-in-out`;
+            backgrounds[previousIndex].style.opacity = 0;
+
+            
+            backgrounds[currentIndex].style.transition = `opacity ${fadeTime / 700}s ease-in-out`;
+            backgrounds[currentIndex].style.opacity = 1;
+        }, transitionTime); 
+    });
+
+
+
+
+
+    $(document).ready(function() {
+        // Проверка аутентификации: если пользователь уже залогинен, перенаправляем его на нужную страницу
+        if ("{{ user.is_authenticated }}" === "True") {
+            window.location.href = "{% url 'main_app.urls' %}";
+            return; // прерываем дальнейшее выполнение скрипта
+        }
+
+        let failedAttempts = parseInt("{{ failed_attempts|default:0 }}", 10);
+        let captchaShown = failedAttempts >= 3;
+
+        // Если количество попыток >= 3, показываем капчу сразу для формы аутентификации
+        if (captchaShown) {
+            $("#captcha-container").show();
+            document.getElementById('login-button').disabled = true; // Деактивируем кнопку при показе капчи
+            resetAndRenderCaptcha('captcha-container'); // Рендерим капчу
+        }
+
+        // Убираем затемнение и очищаем форму при закрытии модального окна регистрации
+        $('#registerModal').on('hidden.bs.modal', function () {
+            // Убираем затемнение вручную
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+
+            // Очищаем все поля формы регистрации
+            $('#registrationForm').trigger("reset");
+
+            // Убираем сообщения об ошибках
+            $(".invalid-feedback").remove();
+            $(".form-control").removeClass("is-invalid");
+        });
+
+        // Обработчик отправки формы регистрации
+        $("#registrationForm").submit(function(event) {
+            event.preventDefault();
+
+            $(".invalid-feedback").remove();
+            $(".form-control").removeClass("is-invalid");
+
+            $.ajax({
+                url: "/register/",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        if (typeof $.fn.modal === 'function') {
+                            $("#registerModal").modal("hide");
+                        } else {
+                            console.error("Bootstrap Modal не поддерживается.");
+                        }
+                        // Убираем затемнение вручную
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Успех!',
+                            text: response.message,
+                            position: 'top', // Изменим позицию на центр (или попробуем другие значения, например, 'top')
+                            heightAuto: false, // Отключим автонастройку высоты
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                popup: 'swal-custom-mobile' // Кастомизация для мобильных устройств
+                            }
+                        });
+                    } else {
+                        if (response.errors) {
+                            for (let field in response.errors) {
+                                let $field = $(`[name="${field}"]`);
+                                $field.addClass("is-invalid");
+                                if ($field.next(".invalid-feedback").length === 0) {
+                                    $field.after(`<div class="invalid-feedback">${response.errors[field].join('<br>')}</div>`);
+                                }
+                            }
+                        }
+                        // Сбрасываем капчу и рендерим её заново при наличии ошибок
+                        resetAndRenderCaptcha('register-captcha-container');
+                        document.getElementById('register-button').disabled = true;
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        for (let field in errors) {
+                            let $field = $(`[name="${field}"]`);
+                            $field.addClass("is-invalid");
+                            if ($field.next(".invalid-feedback").length === 0) {
+                                $field.after(`<div class="invalid-feedback">${errors[field].join('<br>')}</div>`);
+                            }
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ошибка!',
+                            text: 'Произошла ошибка при регистрации. Попробуйте еще раз.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                    // Сбрасываем капчу и рендерим её заново при ошибке
+                    resetAndRenderCaptcha('register-captcha-container');
+                    document.getElementById('register-button').disabled = true;
+                }
+            });
+        });
+
+        // Обработчик отправки формы входа
+        $("#loginForm").submit(function(event) {
+
+            event.preventDefault();
+
+            // Показать спиннер при отправке формы
+            $("#spinner").show();
+            document.getElementById('login-button').disabled = true;
+
+            $.ajax({
+                url: "{% url 'login' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    $("#spinner").hide(); // Скрыть спиннер при успехе
+                    if (response.success) {
+                        // Добавляем принудительное перенаправление
+                        window.location.href = response.redirect_url;
+                    } else {
+                        $("#spinner").hide(); // Скрыть спиннер при ошибке
+
+                        if (response.reset_captcha || failedAttempts >= 3) {
+                            $("#captcha-container").show();
+                            document.getElementById('login-button').disabled = true;
+                            resetAndRenderCaptcha('captcha-container'); // Сбрасываем или рендерим капчу
+                            captchaShown = true;
+                        }
+                        failedAttempts += 1;
+
+                        console.log("Ошибка входа:", response);
+
+                        let errorMessage = 'Неверный логин или пароль. Попробуйте еще раз.';
+                        if (response.errors && response.errors.captcha) {
+                            errorMessage = 'Неверная капча. Попробуйте еще раз.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ошибка!',
+                            text: errorMessage,
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                popup: 'swal-custom-mobile' // Кастомизация для мобильных устройств
+                            }
+                        });
+
+                        if (!captchaShown) {
+                            document.getElementById('login-button').disabled = false;
+                        } else {
+                            resetAndRenderCaptcha('captcha-container'); // Перерендериваем капчу после ошибки
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    $("#spinner").hide(); // Скрыть спиннер при ошибке
+                    console.error("Произошла ошибка во время входа:", xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ошибка!',
+                        text: 'Произошла ошибка. Попробуйте еще раз.',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'swal-custom-mobile' // Кастомизация для мобильных устройств
+                        }
+                    });
+                    document.getElementById('login-button').disabled = false;
+
+                    resetAndRenderCaptcha('captcha-container'); // Перерендериваем капчу в случае ошибки
+                }
+            });
+        });
+
+        // Кастомные стили для SweetAlert на мобильных устройствах
+        var style = document.createElement('style');
+        style.innerHTML = `
+            @media (max-width: 980px) {
+                .swal-custom-mobile {
+                    width: 70% !important; /* Увеличение ширины */
+                    font-size: 1.6em !important; /* Увеличение шрифта */
+                }
+                .swal2-popup {
+                    width: 80% !important; /* Расширение окна */
+                }
+                .swal2-title {
+                    font-size: 1.8em !important; /* Увеличение размера заголовка */
+                }
+                .swal2-content {
+                    font-size: 1.4em !important; /* Увеличение размера текста */
+                }
+                .swal2-confirm {
+                    font-size: 1.3em !important; /* Увеличение размера кнопки */
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+
+
+
+
+
+
+{% endblock %}
